@@ -24,6 +24,7 @@
     "scheduleTabPast": "Past",
     "schedulePastEmpty": "No past concerts yet.",
     "nextConcertLabel": "Next concert",
+        "scheduleTBA": "TBA",
     "viewSchedule": "View full schedule",
 "nowPlaying": "Now playing",
 "openInYoutube": "Open in YouTube",
@@ -61,6 +62,7 @@
     "scheduleEmpty": "Próximas fechas de concierto se anunciarán pronto.",
     "scheduleTabUpcoming": "Próximos",
     "scheduleTabPast": "Anteriores",
+          "scheduleTBA": "TBA",
     "schedulePastEmpty": "Aún no hay conciertos anteriores.",
     "nextConcertLabel": "Próximo concierto",
     "viewSchedule": "Ver agenda completa",
@@ -90,6 +92,7 @@
     "sections": {
       "bio": "Über mich",
       "schedule": "Termine",
+
       "media": "Media",
       "photos": "Fotos",
       "projects": "Projekte",
@@ -102,6 +105,7 @@
     "schedulePastEmpty": "Noch keine vergangenen Konzerte.",
     "nextConcertLabel": "Nächstes Konzert",
     "viewSchedule": "Vollständigen Terminplan ansehen",
+                "scheduleTBA": "TBA",
 "nowPlaying": "Aktuell läuft",
 "openInYoutube": "Auf YouTube öffnen",
 "mediaPlaylistLabel": "Wiedergabeliste",

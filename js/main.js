@@ -112,6 +112,7 @@ function renderAll() {
   renderVenues();
   renderSchedule();
   renderMedia();
+  initMediaCarousel();
   renderPhotos();
   renderProjects("projectsGrid", "projectsEmpty");           // full projects page
   renderProjects("projectsPreviewGrid", "projectsPreviewEmpty", 3); // homepage preview
@@ -163,6 +164,10 @@ function renderVenues() {
   });
 }
 
+/* ---------------------------------------------------------------------
+  Schedule — handles both dated events and "TBA" (year-only) events.
+  A TBA event has { tba: true, year: <number> } instead of { date }.
+--------------------------------------------------------------------- */
 function renderSchedule() {
   const upcomingList = document.getElementById("scheduleList");
   const upcomingEmpty = document.getElementById("scheduleEmpty");
@@ -173,14 +178,25 @@ function renderSchedule() {
   const items = I18N.content?.schedule || [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const currentYear = today.getFullYear();
+
+  function getYear(item) {
+    return item.tba ? item.year : new Date(item.date).getFullYear();
+  }
+  function getSortTime(item) {
+    return item.tba ? Infinity : new Date(item.date).getTime();
+  }
+  function isUpcoming(item) {
+    return item.tba ? item.year >= currentYear : new Date(item.date) >= today;
+  }
 
   const upcoming = items
-    .filter((item) => item.date && new Date(item.date) >= today)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+    .filter(isUpcoming)
+    .sort((a, b) => getYear(a) - getYear(b) || getSortTime(a) - getSortTime(b));
 
   const past = items
-    .filter((item) => item.date && new Date(item.date) < today)
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+    .filter((item) => !isUpcoming(item))
+    .sort((a, b) => getYear(b) - getYear(a) || getSortTime(b) - getSortTime(a));
 
   upcomingList.innerHTML = "";
   appendGroupedByYear(upcomingList, upcoming);
@@ -198,7 +214,7 @@ function renderSchedule() {
 function appendGroupedByYear(container, items) {
   let currentYear = null;
   items.forEach((item) => {
-    const year = new Date(item.date).getFullYear();
+    const year = item.tba ? item.year : new Date(item.date).getFullYear();
     if (year !== currentYear) {
       currentYear = year;
       const yearHeader = document.createElement("li");
@@ -214,18 +230,24 @@ function buildScheduleItem(item) {
   const li = document.createElement("li");
   li.className = "schedule-item";
 
-  const { day, month } = formatDateParts(item.date, I18N.getLang());
+  const { day, month } = item.tba
+    ? { day: "—", month: I18N.t("scheduleTBA") }
+    : formatDateParts(item.date, I18N.getLang());
 
   const dateBox = document.createElement("div");
   dateBox.className = "schedule-item__datebox";
-  const dayEl = document.createElement("span");
-  dayEl.className = "schedule-item__day";
-  dayEl.textContent = day;
-  const monthEl = document.createElement("span");
-  monthEl.className = "schedule-item__month";
-  monthEl.textContent = month;
-  dateBox.appendChild(dayEl);
-  dateBox.appendChild(monthEl);
+
+  const dayMonthEl = document.createElement("span");
+  dayMonthEl.className = "schedule-item__daymonth";
+  dayMonthEl.textContent = `${day} ${month}`;
+  dateBox.appendChild(dayMonthEl);
+
+  if (item.time) {
+    const timeEl = document.createElement("span");
+    timeEl.className = "schedule-item__time";
+    timeEl.textContent = pickLang(item.time);
+    dateBox.appendChild(timeEl);
+  }
 
   const info = document.createElement("div");
   info.className = "schedule-item__info";
@@ -235,13 +257,23 @@ function buildScheduleItem(item) {
   title.textContent = pickLang(item.title);
   info.appendChild(title);
 
-  const venueLine = [pickLang(item.venue), pickLang(item.city)].filter(Boolean).join(" — ");
-  if (venueLine) {
-    const venue = document.createElement("p");
-    venue.className = "schedule-item__venue";
-    venue.textContent = venueLine;
-    info.appendChild(venue);
-  }
+const venue = pickLang(item.venue);
+const city = pickLang(item.city);
+const country = pickLang(item.country);
+
+const venueLine = [
+  [venue, city].filter(Boolean).join(", "),
+  country
+].filter(Boolean).join(" | ");
+
+if (venueLine) {
+  const venueEl = document.createElement("p");
+
+  venueEl.className = "schedule-item__venue";
+  venueEl.textContent = venueLine;
+
+  info.appendChild(venueEl);
+}
 
   if (item.program) {
     const program = document.createElement("p");
@@ -349,33 +381,32 @@ function renderFloatingConcert() {
   badgeDay.textContent = day;
 
   badge.appendChild(badgeMonth);
-badge.appendChild(badgeDay);
+  badge.appendChild(badgeDay);
 
-const info = document.createElement("div");
-info.className = "floating-concert__info";
+  const info = document.createElement("div");
+  info.className = "floating-concert__info";
 
-const label = document.createElement("p");
-label.className = "floating-concert__label";
-label.textContent = I18N.t("nextConcertLabel");
+  const label = document.createElement("p");
+  label.className = "floating-concert__label";
+  label.textContent = I18N.t("nextConcertLabel");
 
-const title = document.createElement("p");
-title.className = "floating-concert__venue";
-title.textContent = pickLang(next.title);
+  const title = document.createElement("p");
+  title.className = "floating-concert__venue";
+  title.textContent = pickLang(next.title);
 
-const program = document.createElement("p");
-program.className = "floating-concert__program";
-program.textContent = pickLang(next.program);
+  const program = document.createElement("p");
+  program.className = "floating-concert__program";
+  program.textContent = pickLang(next.program);
 
-const link = document.createElement("a");
-link.className = "floating-concert__link";
-link.href = "/schedule";
-link.textContent = I18N.t("viewSchedule");
+  const link = document.createElement("a");
+  link.className = "floating-concert__link";
+  link.href = "/schedule";
+  link.textContent = I18N.t("viewSchedule");
 
-info.appendChild(label);
-info.appendChild(title);
-if (next.program) info.appendChild(program);
-info.appendChild(link);
-
+  info.appendChild(label);
+  info.appendChild(title);
+  if (next.program) info.appendChild(program);
+  info.appendChild(link);
 
   const closeBtn = document.createElement("button");
   closeBtn.className = "floating-concert__close";
@@ -398,7 +429,7 @@ function formatDateParts(dateStr, lang) {
   const iso = dateStr.includes("T") ? dateStr : dateStr + "T00:00:00";
   const date = new Date(iso);
   const day = date.getDate();
-  const month = date.toLocaleDateString(lang, { month: "short" }).toUpperCase().replace(".", "");
+  const month = date.toLocaleDateString(lang, { month: "short" }).replace(".", "");
   return { day, month };
 }
 
@@ -480,14 +511,14 @@ function showFeaturedMedia(item) {
     poster.setAttribute("aria-label", "Play video");
 
     const img = document.createElement("img");
-img.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
-img.loading = "lazy";
-img.alt = "";
-img.onerror = () => {
-  img.onerror = null;
-  img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-};
-poster.appendChild(img);
+    img.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+    img.loading = "lazy";
+    img.alt = "";
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    };
+    poster.appendChild(img);
 
     const scrim = document.createElement("span");
     scrim.className = "media-player__scrim";
@@ -496,7 +527,7 @@ poster.appendChild(img);
     const playIcon = document.createElement("span");
     playIcon.className = "media-player__play";
     playIcon.innerHTML = `
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+      <svg viewBox="0 0 24 24" width="60" height="60" fill="none">
         <circle cx="12" cy="12" r="11" fill="#b8874f" />
         <path d="M10 8.5v7l6-3.5-6-3.5z" fill="#fffdf9" />
       </svg>
@@ -557,8 +588,8 @@ function renderPhotos() {
     img.alt = pickLang(item.alt) || "";
     fig.appendChild(img);
 
-fig.addEventListener("click", () => openLightbox(items, index));
-fig.style.cursor = "zoom-in";
+    fig.addEventListener("click", () => openLightbox(items, index));
+    fig.style.cursor = "zoom-in";
 
     grid.appendChild(fig);
   });
@@ -1002,4 +1033,85 @@ function scrollToHashTarget() {
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+function initMediaCarousel() {
+  const playlist = document.querySelector(".media-playlist");
+
+  if (!playlist || playlist.dataset.carouselReady === "true") return;
+
+  playlist.dataset.carouselReady = "true";
+
+  const wrap = document.createElement("div");
+  wrap.className = "media-playlist-wrap";
+
+  playlist.parentNode.insertBefore(wrap, playlist);
+  wrap.appendChild(playlist);
+
+  const prev = document.createElement("button");
+  prev.type = "button";
+  prev.className = "media-carousel-arrow media-carousel-arrow--prev";
+  prev.setAttribute("aria-label", "Previous video");
+
+  prev.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M14.5 5L7.5 12L14.5 19"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+    </svg>
+  `;
+
+  const next = document.createElement("button");
+  next.type = "button";
+  next.className = "media-carousel-arrow media-carousel-arrow--next";
+  next.setAttribute("aria-label", "Next video");
+
+  next.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9.5 5L16.5 12L9.5 19"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+    </svg>
+  `;
+
+  wrap.appendChild(prev);
+  wrap.appendChild(next);
+
+  const updateArrows = () => {
+    const maxScroll = playlist.scrollWidth - playlist.clientWidth;
+
+    prev.disabled = playlist.scrollLeft <= 2;
+    next.disabled = playlist.scrollLeft >= maxScroll - 2;
+  };
+
+  const scrollAmount = () => {
+    const item = playlist.querySelector(".media-playlist__item");
+
+    if (!item) return playlist.clientWidth * 0.8;
+
+    return item.getBoundingClientRect().width + 16;
+  };
+
+  prev.addEventListener("click", () => {
+    playlist.scrollBy({
+      left: -scrollAmount(),
+      behavior: "smooth"
+    });
+  });
+
+  next.addEventListener("click", () => {
+    playlist.scrollBy({
+      left: scrollAmount(),
+      behavior: "smooth"
+    });
+  });
+
+  playlist.addEventListener("scroll", updateArrows, { passive: true });
+  window.addEventListener("resize", updateArrows);
+
+  updateArrows();
 }

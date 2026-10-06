@@ -97,7 +97,21 @@
   { "src": "/assets/media/photo-1.jpg", "alt": { "en": "", "es": "", "de": "" } },
   { "src": "/assets/media/photo-2.jpg", "alt": { "en": "", "es": "", "de": "" }, "tall": true },
   { "src": "/assets/media/photo-3.jpg", "alt": { "en": "", "es": "", "de": "" } },
-  { "src": "/assets/media/photo-4.jpg", "alt": { "en": "", "es": "", "de": "" } }
+  { "src": "/assets/media/photo-4.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-5.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-6.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-7.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-8.jpg", "alt": { "en": "", "es": "", "de": "" },"tall": true },
+  { "src": "/assets/media/photo-9.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-10.jpg", "alt": { "en": "", "es": "", "de": "" },"tall": true },
+  { "src": "/assets/media/photo-11.jpg", "alt": { "en": "", "es": "", "de": "" },"tall": true },
+  { "src": "/assets/media/photo-12.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-13.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-14.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-15.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-16.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-17.jpg", "alt": { "en": "", "es": "", "de": "" } },
+  { "src": "/assets/media/photo-18.jpg", "alt": { "en": "", "es": "", "de": "" } }
 ],
 "projects": [
   {

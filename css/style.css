@@ -206,15 +206,6 @@ transition:
   border-bottom-color: var(--color-line);
 }
 
-.site-header.is-scrolled {
-  background: rgba(244, 237, 225, 0.6);
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  border-bottom-color: var(--color-line);
-}
-
 .site-header:not(.is-scrolled) .site-header__name,
 .site-header:not(.is-scrolled) .site-header__surname,
 .site-header:not(.is-scrolled) .primary-nav__list a,
@@ -1280,16 +1271,15 @@ transition:
 
 .schedule-year {
   position: relative;
-
   margin-top: 3.2rem;
   padding: 0 0 0.7rem;
 
   color: var(--color-amber-deep);
-
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: clamp(2rem, 4vw, 3rem);
   font-style: italic;
   font-weight: 400;
+  line-height: 1;
 
   border-bottom: 1px solid var(--color-line);
 }
@@ -1332,6 +1322,41 @@ transition:
   padding-top: 1.7rem;
 }
 
+.schedule-item__daymonth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  color: var(--color-amber-deep);
+
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 400;
+
+  text-align: center;
+
+  transition: color 0.25s var(--ease);
+}
+
+.schedule-item__time {
+  display: block;
+
+  width: 100%;
+  margin-top: 0.5rem;
+
+  color: var(--color-coffee);
+  opacity: 0.75;
+
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
 
 /* --------------------------------------------------------------------------
    Schedule — Hover
@@ -1353,6 +1378,9 @@ transition:
   color: var(--color-amber-deep);
 }
 
+.schedule-item:hover .schedule-item__daymonth {
+  color: var(--color-ink);
+}
 
 /* --------------------------------------------------------------------------
    Schedule — Date
@@ -1493,22 +1521,20 @@ transition:
 
   border-top: 1px solid var(--color-line);
 }
+
 /* ==========================================================================
-   MEDIA — PLAYER + PLAYLIST + GALLERY
-   ========================================================================== */
-/* ==========================================================================
-   MEDIA — PLAYER + PLAYLIST + GALLERY
+   MEDIA — PLAYER
    ========================================================================== */
 
 .media-frame {
   border: 1px solid var(--color-amber-deep);
-  padding: 6px;
-  margin-bottom: 2rem;
+  padding: 5px;
+  margin-bottom: 2.4rem;
 }
 
 .media-frame__inner {
-  border: 2px solid var(--color-amber-deep);
-  padding: 1.25rem;
+  border: 1px solid var(--color-amber-deep);
+  padding: 1rem;
 }
 
 .media-player {
@@ -1527,13 +1553,21 @@ transition:
   border: 0;
 }
 
+
+/* --------------------------------------------------------------------------
+   Video poster
+   -------------------------------------------------------------------------- */
+
 .media-player__poster {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   padding: 0;
   border: 0;
+
   cursor: pointer;
   background: none;
 }
@@ -1541,6 +1575,7 @@ transition:
 .media-player__poster img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   display: block;
 }
@@ -1548,7 +1583,9 @@ transition:
 .media-player__scrim {
   position: absolute;
   inset: 0;
+
   background: rgba(28, 23, 18, 0.2);
+
   transition: background-color 0.25s var(--ease);
 }
 
@@ -1556,12 +1593,20 @@ transition:
   background: rgba(28, 23, 18, 0.35);
 }
 
+
+/* --------------------------------------------------------------------------
+   Play button
+   -------------------------------------------------------------------------- */
+
 .media-player__play {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+
   display: flex;
+
+  transform: translate(-50%, -50%);
+
   transition: transform 0.25s var(--ease);
 }
 
@@ -1569,125 +1614,476 @@ transition:
   transform: translate(-50%, -50%) scale(1.08);
 }
 
+
+/* ==========================================================================
+   MEDIA — NOW PLAYING
+   ========================================================================== */
+
 .media-nowplaying {
-  padding-top: 1rem;
+  padding-top: 0.85rem;
 }
 
 .media-nowplaying__title {
   display: flex;
   align-items: center;
+
   width: 100%;
-  gap: 0.6rem;
 
-  padding: 0.4rem 0.9rem;
+  gap: 0.65rem;
 
-  background: var(--color-parchment-dim);
-  border: 1px solid rgba(184, 135, 79, 0.3);
-  border-radius: 999px;
+  padding: 0.2rem 0;
+
+  background: none;
+  border: none;
+  border-radius: 0;
+
+  color: var(--color-ink);
 
   font-family: var(--font-display);
   font-size: 1.05rem;
-  color: var(--color-ink);
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .media-nowplaying__title-rule {
   flex-shrink: 0;
-  width: 1.1rem;
+
+  width: 1.25rem;
   height: 1px;
+
   background: var(--color-amber-deep);
 }
+
+
+/* ==========================================================================
+   MEDIA — LABEL
+   ========================================================================== */
 
 .media-label {
   display: flex;
   align-items: center;
+
   gap: 0.4rem;
+
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+
   color: var(--color-amber-deep);
   font-weight: 600;
+
   margin-bottom: 0.9rem;
 }
 
+
+/* ==========================================================================
+   MEDIA — PLAYLIST
+   ========================================================================== */
+
 .media-playlist {
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
-  margin-bottom: 2.5rem;
+
+  gap: 0.7rem;
+
+  margin-bottom: 2.8rem;
 }
 
 .media-playlist__item {
   position: relative;
+
   aspect-ratio: 16 / 9;
+
   background: var(--color-line);
-  border: 1px solid var(--color-line);
-  border-radius: 6px;
+
+  border: 1px solid transparent;
+  border-radius: 2px;
+
   overflow: hidden;
+
   padding: 0;
+
   cursor: pointer;
   text-align: left;
+
+  transition:
+    border-color 0.25s var(--ease),
+    transform 0.25s var(--ease);
 }
 
-.media-playlist__item.is-active,
+.media-playlist__item.is-active {
+  border-color: var(--color-amber-deep);
+}
+
 .media-playlist__item:hover {
   border-color: var(--color-amber);
+  transform: translateY(-2px);
 }
 
 .media-playlist__item img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   display: block;
 }
 
+
+/* --------------------------------------------------------------------------
+   Playlist overlay — desktop
+   -------------------------------------------------------------------------- */
+
 .media-playlist__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(28, 23, 18, 0.85) 0%, transparent 55%);
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(28, 23, 18, 0.85) 0%,
+      transparent 55%
+    );
 }
+
+
+/* --------------------------------------------------------------------------
+   Playlist title — desktop
+   -------------------------------------------------------------------------- */
 
 .media-playlist__title {
   position: absolute;
-  bottom: 6px;
-  left: 8px;
-  right: 8px;
-  font-size: 0.72rem;
-  line-height: 1.3;
+
+  bottom: 8px;
+  left: 10px;
+  right: 10px;
+
   color: var(--color-white);
+
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 400;
+
+  line-height: 1.3;
 }
+
+
+/* ==========================================================================
+   MEDIA — CAROUSEL WRAPPER
+   ========================================================================== */
+
+.media-playlist-wrap {
+  position: relative;
+}
+
+
+/* ==========================================================================
+   MEDIA — CAROUSEL ARROWS
+   ========================================================================== */
+
+.media-carousel-arrow {
+  display: none;
+}
+
+
+/* ==========================================================================
+   MEDIA — PHOTO GALLERY
+   ========================================================================== */
 
 .photo-grid {
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
+
   gap: 0.8rem;
 }
 
 .photo-grid__item {
   margin: 0;
+
   aspect-ratio: 1;
+
   overflow: hidden;
+
   background: var(--color-parchment-dim);
 }
 
 .photo-grid__item img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   display: block;
+
+  transition: transform 0.45s var(--ease);
+}
+
+.photo-grid__item:hover img {
+  transform: scale(1.04);
 }
 
 .photo-grid__item--tall {
   grid-row: span 2;
+
   aspect-ratio: auto;
 }
 
+
+/* ==========================================================================
+   MEDIA — TABLET / DESKTOP
+   ========================================================================== */
+
 @media (min-width: 640px) {
+
   .media-playlist {
     grid-template-columns: repeat(3, 1fr);
   }
 
   .photo-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   MEDIA — MOBILE CAROUSEL
+   ========================================================================== */
+
+@media (max-width: 600px) {
+
+  /* ------------------------------------------------------------------------
+     Featured video
+     ------------------------------------------------------------------------ */
+
+  .media-frame__inner {
+    display: block;
+  }
+
+  .media-player {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+  }
+
+  .media-nowplaying {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    padding-top: 1.15rem;
+    margin-top: 0;
+  }
+
+  .media-nowplaying__title {
+    position: relative;
+
+    display: flex;
+
+    width: 100%;
+    height: auto;
+
+    font-size: 0.98rem;
+    line-height: 1.4;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Playlist — horizontal carousel
+     ------------------------------------------------------------------------ */
+
+  .media-playlist {
+    display: flex;
+
+    gap: 1rem;
+  
+    width: calc(100% + var(--content-pad) * 2);
+
+    margin-left: calc(-1 * var(--content-pad));
+    margin-bottom: 1rem;
+
+    padding: 0 var(--content-pad) 0.15rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--content-pad);
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+  }
+
+  .media-playlist::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Carousel item
+     ------------------------------------------------------------------------ */
+
+  .media-playlist__item {
+    flex: 0 0 78%;
+
+    width: 78%;
+
+    display: block;
+
+    aspect-ratio: auto;
+
+    overflow: visible;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 0;
+
+    background: none;
+
+    scroll-snap-align: start;
+
+    transform: none;
+  }
+
+  .media-playlist__item:hover,
+  .media-playlist__item.is-active {
+    border-color: transparent;
+
+    transform: none;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Thumbnail
+     ------------------------------------------------------------------------ */
+
+  .media-playlist__item img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 16 / 9;
+
+    object-fit: cover;
+
+    border: 1px solid var(--color-line);
+    border-radius: 3px;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     No overlay on mobile
+     ------------------------------------------------------------------------ */
+
+  .media-playlist__scrim {
+    display: none;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Title — BELOW thumbnail
+     ------------------------------------------------------------------------ */
+
+  .media-playlist__title {
+    position: static;
+
+    display: block;
+
+    width: 100%;
+
+    margin-top: 0.65rem;
+    padding: 0;
+
+    color: var(--color-ink);
+
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 400;
+
+    line-height: 1.4;
+
+    text-align: left;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Carousel arrows
+     ------------------------------------------------------------------------ */
+
+  .media-carousel-arrow {
+    position: absolute;
+    top: 42%;
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: 1px solid var(--color-amber-deep);
+    border-radius: 50%;
+
+    background: rgba(244, 237, 225, 0.94);
+
+    color: var(--color-amber-deep);
+
+    cursor: pointer;
+
+    transform: translateY(-50%);
+
+    transition:
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease),
+      opacity 0.2s var(--ease);
+  }
+
+  .media-carousel-arrow:hover {
+    background: var(--color-amber-deep);
+    color: var(--color-white);
+  }
+
+  .media-carousel-arrow--prev {
+    left: 0.15rem;
+  }
+
+  .media-carousel-arrow--next {
+    right: 0.15rem;
+  }
+
+  .media-carousel-arrow svg {
+    width: 15px;
+    height: 15px;
+
+    display: block;
+  }
+
+  .media-carousel-arrow[disabled] {
+    opacity: 0.25;
+
+    cursor: default;
+    pointer-events: none;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     Photo gallery
+     ------------------------------------------------------------------------ */
+
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 0.65rem;
   }
 }
 
@@ -2843,5 +3239,26 @@ body.lightbox-open {
 
   .media-nowplaying__title-rule {
     display: none;
+  }
+}
+
+
+@media (min-width: 701px) {
+  
+  .page-hero--schedule { 
+    height: calc(clamp(520px, 80vh, 800px) + var(--header-height)); } 
+  
+  .page-hero--schedule .page-hero__image
+  { object-fit: cover;
+    object-position: center 15%; } }
+
+@media (min-width: 701px) {
+  .page-hero--projects {
+    height: calc(clamp(520px, 80vh, 800px) + var(--header-height));
+  }
+
+  .page-hero--projects .page-hero__image {
+    object-fit: cover;
+    object-position: center 5%;
   }
 }
